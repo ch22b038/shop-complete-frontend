@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, Heart, User, Menu, X } from 'lucide-react';
-import { useCartStore } from '@/stores/useCartStore';
+import { Search, Car, Calendar, User, Menu, X, Phone } from 'lucide-react';
+import { useBookingStore } from '@/stores/useBookingStore';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,14 +12,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { categories } from '@/data/mockData';
+import { carCategories } from '@/data/carData';
 
 export function Header() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   
-  const { totalItems } = useCartStore();
+  const { currentBooking } = useBookingStore();
   const { user, isAuthenticated, logout } = useAuthStore();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -43,9 +42,9 @@ export function Header() {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">E</span>
+              <Car className="text-white h-5 w-5" />
             </div>
-            <span className="text-xl font-bold text-foreground">EliteStore</span>
+            <span className="text-xl font-bold text-foreground">DriveNow</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -53,11 +52,11 @@ export function Header() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="font-medium">
-                  Categories
+                  Car Types
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-48">
-                {categories.map((category) => (
+                {carCategories.map((category) => (
                   <DropdownMenuItem key={category.id} asChild>
                     <Link 
                       to={`/category/${category.slug}`}
@@ -70,11 +69,15 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
             
-            <Link to="/deals" className="font-medium hover:text-primary transition-colors">
-              Deals
+            <Link to="/offers" className="font-medium hover:text-primary transition-colors">
+              Special Offers
             </Link>
-            <Link to="/new-arrivals" className="font-medium hover:text-primary transition-colors">
-              New Arrivals
+            <Link to="/about" className="font-medium hover:text-primary transition-colors">
+              About
+            </Link>
+            <Link to="/contact" className="font-medium hover:text-primary transition-colors flex items-center">
+              <Phone className="h-4 w-4 mr-1" />
+              Contact
             </Link>
           </nav>
 
@@ -84,7 +87,7 @@ export function Header() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 type="text"
-                placeholder="Search products..."
+                placeholder="Search cars..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 pr-4"
@@ -94,24 +97,12 @@ export function Header() {
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
-            {/* Wishlist */}
-            <Button variant="ghost" size="icon" asChild>
-              <Link to="/wishlist">
-                <Heart className="h-5 w-5" />
-              </Link>
-            </Button>
-
-            {/* Cart */}
+            {/* My Bookings */}
             <Button variant="ghost" size="icon" className="relative" asChild>
-              <Link to="/cart">
-                <ShoppingCart className="h-5 w-5" />
-                {totalItems > 0 && (
-                  <Badge 
-                    variant="destructive" 
-                    className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs"
-                  >
-                    {totalItems}
-                  </Badge>
+              <Link to="/bookings">
+                <Calendar className="h-5 w-5" />
+                {currentBooking && (
+                  <div className="absolute -top-1 -right-1 h-3 w-3 bg-primary rounded-full"></div>
                 )}
               </Link>
             </Button>
@@ -134,7 +125,7 @@ export function Header() {
                       <Link to="/profile">Profile</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/orders">Orders</Link>
+                      <Link to="/bookings">My Bookings</Link>
                     </DropdownMenuItem>
                     {user?.isAdmin && (
                       <DropdownMenuItem asChild>
@@ -183,7 +174,7 @@ export function Header() {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
                   type="text"
-                  placeholder="Search products..."
+                  placeholder="Search cars..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 pr-4"
@@ -194,9 +185,9 @@ export function Header() {
             {/* Mobile Navigation */}
             <nav className="space-y-2">
               <div className="font-medium text-sm text-muted-foreground uppercase tracking-wide mb-2">
-                Categories
+                Car Types
               </div>
-              {categories.map((category) => (
+              {carCategories.map((category) => (
                 <Link
                   key={category.id}
                   to={`/category/${category.slug}`}
@@ -208,18 +199,18 @@ export function Header() {
               ))}
               <div className="pt-2 mt-4 border-t border-border">
                 <Link
-                  to="/deals"
+                  to="/offers"
                   className="block py-2 text-foreground hover:text-primary transition-colors"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Deals
+                  Special Offers
                 </Link>
                 <Link
-                  to="/new-arrivals"
+                  to="/contact"
                   className="block py-2 text-foreground hover:text-primary transition-colors"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  New Arrivals
+                  Contact
                 </Link>
               </div>
             </nav>

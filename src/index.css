@@ -139,7 +139,7 @@
 @layer components {
   /* E-commerce specific component classes */
   .product-card {
-    @apply bg-card border border-border rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary/20 group;
+    @apply bg-card border border-border rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary/20;
   }
 
   .product-image {

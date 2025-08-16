@@ -60,7 +60,7 @@ export function ProductCard({ product, variant = 'default' }: ProductCardProps) 
 
   return (
     <Link to={`/product/${product.id}`} className="group block">
-      <div className="product-card">
+      <div className="product-card group">
         {/* Image Container */}
         <div className="relative overflow-hidden">
           <img
